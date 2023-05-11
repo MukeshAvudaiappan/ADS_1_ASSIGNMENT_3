@@ -38,26 +38,26 @@ def read(indicator, country_code):
 file = "co2 emission.csv"
 
 # Function to read indicator1 and country_code
-data = read(indicator1, country_code)
+df_1 = read(indicator1, country_code)
 
 # Preprocessing data by removing 'YR' suffix from column & giving new index
-data.columns = [i.replace('YR', '') for i in data.columns]
-data = data.stack().unstack(level=1)
-data.index.names = ['Country', 'Year']
-data.columns
+df_1.columns = [i.replace('YR', '') for i in df_1.columns]
+df_1 = df_1.stack().unstack(level=1)
+df_1.index.names = ['Country', 'Year']
+df_1.columns
 
 # creating another dataframe
-data1 = read(indicator2, country_code)
+df_2 = read(indicator2, country_code)
 
-# removing YR and giving index names to data1
-data1.columns = [i.replace('YR', '') for i in data1.columns]
-data1 = data1.stack().unstack(level=1)
-data1.index.names = ['Country', 'Year']
-data1.columns
+# removing YR and giving index names to df_2
+df_2.columns = [i.replace('YR', '') for i in df_2.columns]
+df_2 = df_2.stack().unstack(level=1)
+df_2.index.names = ['Country', 'Year']
+df_2.columns
 
 # creating indices for dt1 and dt2
-dt1 = data.reset_index()
-dt2 = data1.reset_index()
+dt1 = df_1.reset_index()
+dt2 = df_2.reset_index()
 dt = pd.merge(dt1, dt2)
 dt
 
@@ -79,16 +79,21 @@ def norm_df(df):
 dt_norm = norm_df(dt)
 df_fit = dt_norm.drop('Country', axis=1)
 k = KMeans(n_clusters=2, init='k-means++', random_state=0).fit(df_fit)
-sns.scatterplot(data=dt_norm, x="Country", y="EN.ATM.CO2E.PC",
-                palette='magma', hue=k.labels_, alpha=0.7)  # increase transparency
-plt.xticks(rotation=50)  # rotate x-axis labels
+sns.set_style("whitegrid")
+sns.violinplot(data=dt_norm, x="Country", y="EN.ATM.CO2E.PC",
+               hue=k.labels_, split=True, inner="stick",
+               bw=.2, cut=1, linewidth=1, alpha=.7)
+plt.xticks(rotation=50)
 plt.xlabel('Country')
 plt.ylabel('CO2 emissions (normalized)')
 plt.title('Distribution of CO2 emissions across countries')
-plt.grid(True)
-plt.legend()
-plt.tight_layout()  # adjust spacing between plot elements
-plt.savefig("plot.png")
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(loc='best', fancybox=True, shadow=True, fontsize=10)
+ax = plt.gca()
+ax.set_facecolor('#f5f5f5')
+plt.tight_layout()
+plt.savefig("plot.png", dpi=300)
 plt.show()
 
 # function to find the error
@@ -130,15 +135,23 @@ prmet, cov = opt.curve_fit(fct, x, y)
 dt1["pop_log"] = fct(x, *prmet)
 print("Parameters are:", prmet)
 print("Covariance is:", cov)
-plt.plot(x, dt1["pop_log"], label="Fit", color="red")
-plt.plot(x, y, label="Data", color="blue")
-plt.grid(True)
+sns.set_theme(style="whitegrid")
+sns.lineplot(data=dt1, x=x, y="pop_log", label="Fit",
+             palette="magma", linewidth=2, marker=".", markersize=10)
+sns.lineplot(x=x, y=y, label="Data", palette="magma", linewidth=1.5)
+plt.grid(True, alpha=0.3)
 plt.xlabel('Year')
 plt.ylabel('CO2 emissions')
-plt.title("CO2 emission rate in INDIA")
-plt.legend(loc='best', fancybox=True, shadow=True)
-plt.savefig("Ind.png")
+plt.title("CO2 Emission Rate in India")
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(loc='best', fancybox=True, shadow=True, fontsize=10)
+ax = plt.gca()
+ax.set_facecolor('#f5f5f5')
+plt.tight_layout()
+plt.savefig("Ind.png", dpi=300)
 plt.show()
+
 
 # extracting the sigma
 sigma = np.sqrt(np.diag(cov))
@@ -165,14 +178,21 @@ prmet, cov = opt.curve_fit(fct, x2, y2)
 dt2["pop_log"] = fct(x2, *prmet)
 print("Parameters are:", prmet)
 print("Covariance is:", cov)
-plt.plot(x2, dt2["pop_log"], label="Fit", color="red")
-plt.plot(x2, y2, label="Data", color="blue")
-plt.grid(True)
+sns.set_theme(style="whitegrid")
+sns.lineplot(data=dt2, x=x2, y="pop_log", label="Fit",
+             palette="viridis", linewidth=2, marker=".", markersize=10)
+sns.lineplot(x=x2, y=y2, label="Data", palette="viridis", linewidth=1.5)
+plt.grid(True, alpha=0.3)
 plt.xlabel('Year')
 plt.ylabel('CO2 emissions')
 plt.title("CO2 emission rate in Canada")
-plt.legend(loc='best', fancybox=True, shadow=True)
-plt.savefig("Can.png")
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(loc='best', fancybox=True, shadow=True, fontsize=10)
+ax = plt.gca()
+ax.set_facecolor('#f5f5f5')
+plt.tight_layout()
+plt.savefig("Can.png", dpi=300)
 plt.show()
 
 # extracting the sigma
@@ -200,14 +220,21 @@ prmet, cov = opt.curve_fit(fct, x3, y3)
 dt3["pop_log"] = fct(x3, *prmet)
 print("Parameters are:", prmet)
 print("Covariance is:", cov)
-plt.plot(x3, dt3["pop_log"], label="Fit", color="red")
-plt.plot(x3, y3, label="Data", color="blue")
-plt.grid(True)
+sns.set_theme(style="whitegrid")
+sns.lineplot(x=x3, y=dt3["pop_log"], label="Fit",
+             palette="viridis", linewidth=2, marker=".", markersize=10)
+sns.lineplot(x=x3, y=y3, label="Data", palette="viridis", linewidth=1.5)
+plt.grid(True, alpha=0.3)
 plt.xlabel('Year')
 plt.ylabel('CO2 emissions')
 plt.title("CO2 emission rate in Great Britain - UK")
-plt.legend(loc='best', fancybox=True, shadow=True)
-plt.savefig("UK.png")
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+plt.legend(loc='best', fancybox=True, shadow=True, fontsize=10)
+ax = plt.gca()
+ax.set_facecolor('#f5f5f5')
+plt.tight_layout()
+plt.savefig("UK.png", dpi=300)
 plt.show()
 
 # extracting the sigma
