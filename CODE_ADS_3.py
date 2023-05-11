@@ -46,28 +46,28 @@ df_1 = df_1.stack().unstack(level=1)
 df_1.index.names = ['Country', 'Year']
 df_1.columns
 
-# creating another dataframe
+# Funtion to read indicator2 and country_code
 df_2 = read(indicator2, country_code)
 
-# removing YR and giving index names to df_2
+# Removing YR and giving index names to df_2
 df_2.columns = [i.replace('YR', '') for i in df_2.columns]
 df_2 = df_2.stack().unstack(level=1)
 df_2.index.names = ['Country', 'Year']
 df_2.columns
 
-# creating indices for dt1 and dt2
+# Creating indices for dt1 and dt2
 dt1 = df_1.reset_index()
 dt2 = df_2.reset_index()
 dt = pd.merge(dt1, dt2)
 dt
 
-# dropping the column
+# Dropping the column
 dt.drop(['EG.USE.ELEC.KH.PC'], axis=1, inplace=True)
 dt.drop(['EG.ELC.ACCS.ZS'], axis=1, inplace=True)
 dt
 dt["Year"] = pd.to_numeric(dt["Year"])
 
-# function to normalise the data
+# Function to return normalise DataFrame
 
 
 def norm_df(df):
@@ -96,7 +96,7 @@ plt.tight_layout()
 plt.savefig("plot.png", dpi=300)
 plt.show()
 
-# function to find the error
+# Function to find the error
 
 
 def err_ranges(x, func, param, sigma):
@@ -106,7 +106,7 @@ def err_ranges(x, func, param, sigma):
     upper = lower
     uplow = []
 
-# list to hold upper and lower limits for parameters
+# List to hold upper and lower limits for parameters
     for p, s in zip(param, sigma):
         pmin = p - s
         pmax = p + s
@@ -119,10 +119,10 @@ def err_ranges(x, func, param, sigma):
     return lower, upper
 
 
-dt1 = dt[(dt['Country'] == 'IND')]
+dt1 = dt[(dt['Country'] == 'AUS')]
 dt1
 
-# curve fitting for India
+# Curve fitting for Australia
 val = dt1.values
 x, y = val[:, 1], val[:, 2]
 
@@ -142,30 +142,30 @@ sns.lineplot(x=x, y=y, label="Data", palette="magma", linewidth=1.5)
 plt.grid(True, alpha=0.3)
 plt.xlabel('Year')
 plt.ylabel('CO2 emissions')
-plt.title("CO2 Emission Rate in India")
+plt.title("CO2 Emission Rate in Australia")
 plt.xticks(fontsize=10)
 plt.yticks(fontsize=10)
 plt.legend(loc='best', fancybox=True, shadow=True, fontsize=10)
 ax = plt.gca()
 ax.set_facecolor('#f5f5f5')
 plt.tight_layout()
-plt.savefig("Ind.png", dpi=300)
+plt.savefig("AUS.png", dpi=300)
 plt.show()
 
 
-# extracting the sigma
+# Extracting the sigma
 sigma = np.sqrt(np.diag(cov))
 print(sigma)
 low, up = err_ranges(x, fct, prmet, sigma)
 
-# finding the emission rate in the coming 10 years
+# Finding the emission rate in the coming 10 years
 print("Forcasted CO2 emission")
 low, up = err_ranges(2030, fct, prmet, sigma)
 print("2030 between", low, "and", up)
-dt2 = dt[(dt['Country'] == 'CAN')]
+dt2 = dt[(dt['Country'] == 'IND')]
 dt2
 
-# curve fitting for Canada
+# Curve fitting for India
 val2 = dt2.values
 x2, y2 = val2[:, 1], val2[:, 2]
 
@@ -185,29 +185,29 @@ sns.lineplot(x=x2, y=y2, label="Data", palette="viridis", linewidth=1.5)
 plt.grid(True, alpha=0.3)
 plt.xlabel('Year')
 plt.ylabel('CO2 emissions')
-plt.title("CO2 emission rate in Canada")
+plt.title("CO2 emission rate in India")
 plt.xticks(fontsize=10)
 plt.yticks(fontsize=10)
 plt.legend(loc='best', fancybox=True, shadow=True, fontsize=10)
 ax = plt.gca()
 ax.set_facecolor('#f5f5f5')
 plt.tight_layout()
-plt.savefig("Can.png", dpi=300)
+plt.savefig("IND.png", dpi=300)
 plt.show()
 
-# extracting the sigma
+# Extracting the sigma
 sigma = np.sqrt(np.diag(cov))
 print(sigma)
 low, up = err_ranges(x2, fct, prmet, sigma)
 
-# finding the emission rate in the coming 10 years
+# Finding the emission rate in the coming 10 years
 print("Forcasted CO2 emission")
 low, up = err_ranges(2030, fct, prmet, sigma)
 print("2030 between", low, "and", up)
 dt3 = dt[(dt['Country'] == 'GBR')]
 dt3
 
-# curve fitting for UK
+# Curve fitting for UK
 val3 = dt3.values
 x3, y3 = val3[:, 1], val3[:, 2]
 
@@ -237,12 +237,12 @@ plt.tight_layout()
 plt.savefig("UK.png", dpi=300)
 plt.show()
 
-# extracting the sigma
+# Extracting the sigma
 sigma = np.sqrt(np.diag(cov))
 print(sigma)
 low, up = err_ranges(x3, fct, prmet, sigma)
 
-# finding the emission rate in the coming 10 years
+# Finding the emission rate in the coming 10 years
 print("Forcasted CO2 emission")
 low, up = err_ranges(2030, fct, prmet, sigma)
 print("2030 between", low, "and", up)
