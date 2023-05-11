@@ -30,6 +30,8 @@ country_code = ['AUS', 'GBR', 'CAN', 'IND', 'MYS']
 
 
 def read(indicator, country_code):
+    """Function reads World Bank data for a given indicator & country code,
+    and returns a pandas DataFrame with the data"""
     df = wb.data.DataFrame(indicator, country_code, mrv=30)
     return df
 
@@ -71,6 +73,13 @@ dt["Year"] = pd.to_numeric(dt["Year"])
 
 
 def norm_df(df):
+    """Normalize a given DataFrame by scaling its numerical columns.
+    Args:
+
+    df (pandas.DataFrame): The DataFrame to be normalized.
+    Returns:
+
+    pandas.DataFrame: The normalized DataFrame"""
     y = df.iloc[:, 2:]
     df.iloc[:, 2:] = (y-y.min()) / (y.max() - y.min())
     return df
@@ -93,20 +102,21 @@ plt.legend(loc='best', fancybox=True, shadow=True, fontsize=10)
 ax = plt.gca()
 ax.set_facecolor('#f5f5f5')
 plt.tight_layout()
-plt.savefig("plot.png", dpi=300)
+plt.savefig("5_Countries_Plot.png", dpi=300)
 plt.show()
 
 # Function to find the error
 
 
 def err_ranges(x, func, param, sigma):
+    """calculate the upper and lower error bounds
+    for a model function."""
 
-    # initiate arrays for lower and upper limits
+    """initiate arrays for lower and upper limits"""
     lower = func(x, *param)
     upper = lower
     uplow = []
 
-# List to hold upper and lower limits for parameters
     for p, s in zip(param, sigma):
         pmin = p - s
         pmax = p + s
@@ -128,6 +138,9 @@ x, y = val[:, 1], val[:, 2]
 
 
 def fct(x, a, b, c):
+    """This function calculates a quadratic equation of the 
+    form ax^2 + bx + c given input values for x, a, b, and c. 
+    It returns the calculated value"""
     return a*x**2+b*x+c
 
 
@@ -171,6 +184,9 @@ x2, y2 = val2[:, 1], val2[:, 2]
 
 
 def fct(x, a, b, c):
+    """This function calculates a quadratic equation of the 
+    form ax^2 + bx + c given input values for x, a, b, and c. 
+    It returns the calculated value"""
     return a*x**2+b*x+c
 
 
@@ -213,6 +229,9 @@ x3, y3 = val3[:, 1], val3[:, 2]
 
 
 def fct(x, a, b, c):
+    """This function calculates a quadratic equation of the 
+    form ax^2 + bx + c given input values for x, a, b, and c. 
+    It returns the calculated value"""
     return a*x**2+b*x+c
 
 
